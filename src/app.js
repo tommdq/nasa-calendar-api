@@ -2,9 +2,11 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import { PORT } from './config.js'
 import { pool } from './db/pool.js'
+import cors from 'cors'
 const app = express()
 
 app.use(bodyParser.json())
+app.use(cors())
 app.get('/', (req, res) => {
   res.send('Welcome to Nasa-Calendar Api!')
 })
