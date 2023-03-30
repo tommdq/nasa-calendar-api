@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to Nasa-Calendar Api!')
 })
 
-app.get('/comments', async (req, res) => {
+app.get('/api/comments', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM comments')
     console.log(rows)
@@ -20,7 +20,7 @@ app.get('/comments', async (req, res) => {
   }
 })
 
-app.post('/comments', async (req, res) => {
+app.post('/api/comments', async (req, res) => {
   try {
     const query = 'INSERT INTO comments (comment) VALUES ($1)'
     console.log(req.body)
