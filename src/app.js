@@ -12,8 +12,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/comments', async (req, res) => {
+  const { imageId } = req.params
   try {
-    const { rows } = await pool.query('SELECT * FROM comments')
+    const { rows } = await pool.query('SELECT * FROM comments WHERE image_Id = $1', [imageId])
+    console.log(rows)
     res.status(200).json(rows)
   } catch (error) {
     console.error(error)
