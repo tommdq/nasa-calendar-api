@@ -12,10 +12,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/comments', async (req, res) => {
-  const { imageId } = req.params
+  const { imageId } = req.query
   try {
-    const { rows } = await pool.query('SELECT * FROM comments WHERE image_Id = $1', [imageId])
-    console.log(rows)
+    const { rows } = await pool.query('SELECT * FROM comments WHERE image_id = $1', [imageId])
     res.status(200).json(rows)
   } catch (error) {
     console.error(error)
@@ -25,16 +24,15 @@ app.get('/api/comments', async (req, res) => {
 
 app.post('/api/comments', async (req, res) => {
   try {
-    const query = 'INSERT INTO comments (comment, image_id) VALUES ($1, $2)'
-    console.log('req.body', req.body)
+    const query = 'INSERT INTO comments (comment, image_Id, created_at) VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING *'
     if (!req.body || !req.body.comment) {
       return res.status(400).json({
         error: 'Comment is empty'
       })
     }
     const { comment, imageId } = req.body
-    await pool.query(query, [comment, imageId])
-    res.status(201).json({ message: 'Comment added successfully' })
+    const result = await pool.query(query, [comment, imageId])
+    res.status(201).json({ commentPosted: result.rows[0] })
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: 'Internal server error' })
