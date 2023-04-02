@@ -25,15 +25,15 @@ app.get('/api/comments', async (req, res) => {
 
 app.post('/api/comments', async (req, res) => {
   try {
-    const query = 'INSERT INTO comments (comment) VALUES ($1)'
+    const query = 'INSERT INTO comments (comment, image_id) VALUES ($1, $2)'
     console.log('req.body', req.body)
     if (!req.body || !req.body.comment) {
       return res.status(400).json({
         error: 'Comment is empty'
       })
     }
-    const { comment } = req.body
-    await pool.query(query, [comment])
+    const { comment, imageId } = req.body
+    await pool.query(query, [comment, imageId])
     res.status(201).json({ message: 'Comment added successfully' })
   } catch (error) {
     console.error(error)
