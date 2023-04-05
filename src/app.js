@@ -11,10 +11,25 @@ app.get('/', (req, res) => {
   res.send('Welcome to Nasa-Calendar Api!')
 })
 
+app.get('/api/comments/all', async (_req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM comments')
+    res.status(200).json(rows)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
 app.get('/api/comments', async (req, res) => {
   const { imageId } = req.query
   try {
     const { rows } = await pool.query('SELECT * FROM comments WHERE image_id = $1', [imageId])
+    if (!imageId) {
+      return res.status(400).json({
+        error: 'Image id is empty'
+      })
+    }
     res.status(200).json(rows)
   } catch (error) {
     console.error(error)
